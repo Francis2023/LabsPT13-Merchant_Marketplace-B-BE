@@ -2,20 +2,20 @@ exports.up = function (knex) {
   return knex.schema.createTable('products', function (table) {
     table.string('id').notNullable().unique().primary();
     table
-      .integer('profile_id')
-      .unsigned()
+      .string('profile_id')
       .notNullable()
       .references('id')
-      .inTable('products')
+      .inTable('profiles')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
 
-    table.string('title');
-    table.string('description');
-    table.string('category');
+    table.string('title').notNullable();
+    table.float('price').notNullable();
+    table.string('description').notNullable();
+    table.string('category').notNullable();
     table.string('brand');
-    table.string('condition');
-    table.string('delivery_method');
+    table.string('condition').notNullable();
+    table.string('delivery_method').notNullable();
     table.timestamps('created_at', { useTz: true });
   });
 };
