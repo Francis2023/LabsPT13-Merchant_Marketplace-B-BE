@@ -38,26 +38,25 @@ router.post('/', authRequired, validateBody, async (req, res) => {
   }
 });
 
-router.put('/', authRequired, validateBody, async (req, res) => {
-  const changes = req.body;
-  const id = changes.id || 0;
+router.put(
+  '/:id',
+  authRequired,
+  validateId(TABLE_NAME),
+  validateBody,
+  async (req, res) => {
+    const changes = { ...req.body, updated_at: new Date().toISOString() };
 
-  try {
-    const product = await findBy(TABLE_NAME, { id });
-
-    if (product) {
-      const updated = await update(TABLE_NAME, changes, { id });
+    try {
+      const updated = await update(TABLE_NAME, changes, { id: req.product.id });
       res.status(200).json({ message: 'Product updated', product: updated });
-    } else {
-      res.status(404).json({ message: 'Could not find the specified product' });
+    } catch (err) {
+      res.status(500).json({
+        message: `Could not update product with ID: ${req.product.id}`,
+        error: err.message,
+      });
     }
-  } catch (err) {
-    res.status(500).json({
-      message: `Could not update product with ID: ${id}`,
-      error: err.message,
-    });
   }
-});
+);
 
 router.delete(
   '/:id',

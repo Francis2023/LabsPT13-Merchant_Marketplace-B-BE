@@ -4,7 +4,7 @@ const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
 const validateBody = require('../middleware/validateBody');
 
-const { findAll, findBy, update, remove } = require('../globalDbModels');
+const { findAll, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'tags';
 
@@ -18,26 +18,25 @@ router.get('/', authRequired, async (req, res) => {
   }
 });
 
-router.put('/', authRequired, validateBody, async (req, res) => {
-  const changes = req.body;
-  const id = changes.id || 0;
+router.put(
+  '/:id',
+  authRequired,
+  validateId(TABLE_NAME),
+  validateBody,
+  async (req, res) => {
+    const changes = req.body;
 
-  try {
-    const tag = await findBy(TABLE_NAME, { id });
-
-    if (tag) {
-      const updated = await update(TABLE_NAME, changes, { id });
+    try {
+      const updated = await update(TABLE_NAME, changes, { id: req.tag.id });
       res.status(200).json({ message: 'Tag updated', tag: updated });
-    } else {
-      res.status(404).json({ message: 'Could not find the specified tag' });
+    } catch (err) {
+      res.status(500).json({
+        message: `Could not update tag with ID: ${req.tag.id}`,
+        error: err.message,
+      });
     }
-  } catch (err) {
-    res.status(500).json({
-      message: `Could not update tag with ID: ${id}`,
-      error: err.message,
-    });
   }
-});
+);
 
 router.delete(
   '/:id',

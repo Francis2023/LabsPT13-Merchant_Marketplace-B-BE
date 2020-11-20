@@ -3,6 +3,7 @@ const router = express.Router();
 const Profiles = require('./profilesModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
+const validateBody = require('../middleware/validateBody');
 const { findAll, findBy, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'profiles';
@@ -152,29 +153,26 @@ router.get('/:id', authRequired, validateId(TABLE_NAME), (req, res) => {
  *                profile:
  *                  $ref: '#/components/schemas/Profile'
  */
-router.post('/', authRequired, async (req, res) => {
+router.post('/', authRequired, validateBody, async (req, res) => {
   const profile = req.body;
-  if (profile) {
-    const id = profile.id || 0;
-    try {
-      await findBy(TABLE_NAME, { id }).then(async (pf) => {
-        if (pf == undefined) {
-          //profile not found so lets insert it
-          await Profiles.create(profile).then((profile) =>
-            res
-              .status(200)
-              .json({ message: 'profile created', profile: profile[0] })
-          );
-        } else {
-          res.status(400).json({ message: 'profile already exists' });
-        }
-      });
-    } catch (e) {
-      console.error(e);
-      res.status(500).json({ message: e.message });
-    }
-  } else {
-    res.status(404).json({ message: 'Profile missing' });
+  const id = profile.id || 0;
+
+  try {
+    await findBy(TABLE_NAME, { id }).then(async (pf) => {
+      if (pf == undefined) {
+        //profile not found so lets insert it
+        await Profiles.create(profile).then((profile) =>
+          res
+            .status(200)
+            .json({ message: 'profile created', profile: profile[0] })
+        );
+      } else {
+        res.status(400).json({ message: 'profile already exists' });
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message });
   }
 });
 /**
@@ -211,33 +209,28 @@ router.post('/', authRequired, async (req, res) => {
  *                profile:
  *                  $ref: '#/components/schemas/Profile'
  */
-router.put('/', authRequired, function (req, res) {
-  const profile = req.body;
-  if (profile) {
-    const id = profile.id || 0;
-    findBy(TABLE_NAME, { id })
-      .then(
-        update(TABLE_NAME, profile, { id })
-          .then((updated) => {
-            res
-              .status(200)
-              .json({ message: 'profile updated', profile: updated[0] });
-          })
-          .catch((err) => {
-            res.status(500).json({
-              message: `Could not update profile '${id}'`,
-              error: err.message,
-            });
-          })
-      )
-      .catch((err) => {
-        res.status(404).json({
-          message: `Could not find profile '${id}'`,
-          error: err.message,
-        });
+router.put(
+  '/:id',
+  authRequired,
+  validateId(TABLE_NAME),
+  validateBody,
+  async (req, res) => {
+    const changes = { ...req.body, updated_at: new Date().toISOString() };
+
+    try {
+      const updated = await update(TABLE_NAME, changes, {
+        id: req.profile.id,
       });
+
+      res.status(200).json({ message: 'profile updated', profile: updated });
+    } catch (err) {
+      res.status(500).json({
+        message: `Could not update profile with ID: '${id}'`,
+        error: err.message,
+      });
+    }
   }
-});
+);
 /**
  * @swagger
  * /profile/{id}:
@@ -276,7 +269,7 @@ router.delete(
     try {
       await remove(TABLE_NAME, { id: req.profile.id });
       res.status(200).json({
-        message: `Profile '${req.profile.id}' was deleted.`,
+        message: `Profile with ID: '${req.profile.id}' was deleted.`,
         profile: req.profile,
       });
     } catch (err) {
