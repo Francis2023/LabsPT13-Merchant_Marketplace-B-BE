@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const Profiles = require('./profilesModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
-const Profiles = require('./profilesModel');
 const { findAll, findBy, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'profiles';
