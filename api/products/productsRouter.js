@@ -4,6 +4,7 @@ const Products = require('./productsModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
 const validateBody = require('../middleware/validateBody');
+const removeObjKeys = require('../../helpers/removeObjKeys');
 const { findAll, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'products';
@@ -26,7 +27,8 @@ router.get('/:id', authRequired, validateId(TABLE_NAME), async (req, res) => {
 
 // create a new product
 router.post('/', authRequired, validateBody, async (req, res) => {
-  const product = req.body;
+  const tags = req.body.tags.split(',');
+  const product = removeObjKeys(req.body, ['tags']);
 
   try {
     const created = await Products.create(product);
