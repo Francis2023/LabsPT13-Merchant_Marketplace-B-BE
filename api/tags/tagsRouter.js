@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authRequired = require('../middleware/authRequired');
 
-const { findAll, findBy, update, remove } = require('../globalDbModels');
+const { findAll } = require('../globalDbModels');
 
 const TABLE_NAME = 'tags';
 
