@@ -1,8 +1,8 @@
 const express = require('express');
+const router = express.Router();
+const Products = require('./productsModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
-const router = express.Router();
-const Products = require('./productModel');
 const { findAll, findBy, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'products';
