@@ -1,6 +1,6 @@
 exports.up = function (knex) {
   return knex.schema.createTable('products', function (table) {
-    table.string('id').notNullable().unique().primary();
+    table.increments();
     table
       .string('profile_id')
       .notNullable()
@@ -16,7 +16,7 @@ exports.up = function (knex) {
     table.string('brand');
     table.string('condition').notNullable();
     table.string('delivery_method').notNullable();
-    table.timestamps('created_at', { useTz: true });
+    table.timestamps(true, true);
   });
 };
 
