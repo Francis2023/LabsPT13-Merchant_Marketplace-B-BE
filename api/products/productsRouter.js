@@ -4,7 +4,7 @@ const Products = require('./productsModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
 const validateBody = require('../middleware/validateBody');
-const { findAll, findBy, update, remove } = require('../globalDbModels');
+const { findAll, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'products';
 
