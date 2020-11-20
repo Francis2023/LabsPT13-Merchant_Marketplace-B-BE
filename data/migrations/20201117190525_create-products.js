@@ -14,6 +14,7 @@ exports.up = function (knex) {
     table.float('price').notNullable();
     table.string('description').notNullable();
     table.string('category').notNullable();
+    table.string('tags');
     table.string('brand');
     table.string('condition').notNullable();
     table.string('delivery_method').notNullable();

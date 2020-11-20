@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Products = require('./productsModel');
-const Tags = require('../tags/tagsModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
 const validateBody = require('../middleware/validateBody');
-const removeObjKeys = require('../../helpers/removeObjKeys');
 const { findAll, update, remove } = require('../globalDbModels');
 
 const TABLE_NAME = 'products';
@@ -21,6 +19,16 @@ router.get('/', authRequired, async (req, res) => {
   }
 });
 
+router.get('/tags', authRequired, async (req, res) => {
+  try {
+    const tags = await Products.getAllTags();
+    res.status(200).json(tags);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // retrieve a product by the given :id
 router.get('/:id', authRequired, validateId(TABLE_NAME), async (req, res) => {
   res.status(200).json(req.product);
@@ -28,14 +36,10 @@ router.get('/:id', authRequired, validateId(TABLE_NAME), async (req, res) => {
 
 // create a new product
 router.post('/', authRequired, validateBody, async (req, res) => {
-  const tags = req.body.tags.split(',');
-  const product = removeObjKeys(req.body, ['tags']);
+  const product = req.body;
 
   try {
     const created = await Products.create(product);
-    // insert all the tags under the inserted product
-    await Tags.create(tags, created[0].id);
-
     res.status(201).json({ message: 'Product created', product: created[0] });
   } catch (err) {
     console.error(err);
