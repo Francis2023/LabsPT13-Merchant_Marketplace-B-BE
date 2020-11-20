@@ -10,9 +10,11 @@ exports.up = function (knex) {
       .onUpdate('CASCADE');
 
     table.string('title').notNullable();
+    table.string('img').notNullable();
     table.float('price').notNullable();
     table.string('description').notNullable();
     table.string('category').notNullable();
+    table.string('tags');
     table.string('brand');
     table.string('condition').notNullable();
     table.string('delivery_method').notNullable();
