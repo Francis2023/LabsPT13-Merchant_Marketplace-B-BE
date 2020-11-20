@@ -268,16 +268,6 @@ router.put('/', authRequired, function (req, res) {
  *                profile:
  *                  $ref: '#/components/schemas/Profile'
  */
-<<<<<<< HEAD
-router.delete('/:id', authRequired, function (req, res) {
-  const id = req.params.id;
-  try {
-    Profiles.findById(id).then((profile) => {
-      Profiles.remove(profile.id).then(() => {
-        res
-          .status(200)
-          .json({ message: `Profile '${id}' was deleted.`, profile: profile });
-=======
 router.delete(
   '/:id',
   authRequired,
@@ -288,7 +278,6 @@ router.delete(
       res.status(200).json({
         message: `Profile '${req.profile.id}' was deleted.`,
         profile: req.profile,
->>>>>>> b90e46158640609ca53d5e812a9fd4edd251c494
       });
     } catch (err) {
       res.status(500).json({
