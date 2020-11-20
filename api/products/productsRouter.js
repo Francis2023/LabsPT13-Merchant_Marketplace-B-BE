@@ -34,7 +34,7 @@ router.post('/', authRequired, validateBody, async (req, res) => {
   try {
     const created = await Products.create(product);
     // insert all the tags under the inserted product
-    await Tags.create(tags, created.id);
+    await Tags.create(tags, created[0].id);
 
     res.status(201).json({ message: 'Product created', product: created[0] });
   } catch (err) {
