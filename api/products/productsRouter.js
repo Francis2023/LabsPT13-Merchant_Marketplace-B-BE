@@ -19,6 +19,7 @@ router.get('/', authRequired, async (req, res) => {
   }
 });
 
+// retrieve all available tags
 router.get('/tags', authRequired, async (req, res) => {
   try {
     const tags = await Products.getAllTags();
@@ -47,6 +48,7 @@ router.post('/', authRequired, validateBody, async (req, res) => {
   }
 });
 
+// update the give product
 router.put(
   '/:id',
   authRequired,
@@ -67,6 +69,7 @@ router.put(
   }
 );
 
+// delete the specified product
 router.delete(
   '/:id',
   authRequired,
