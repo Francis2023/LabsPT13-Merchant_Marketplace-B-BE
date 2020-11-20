@@ -63,12 +63,12 @@ router.put('/', authRequired, async (req, res) => {
       }
     } catch (err) {
       res.status(500).json({
-        message: `Could not update product '${id}'`,
+        message: `Could not update product with ID: ${id}`,
         error: err.message,
       });
     }
   } else {
-    res.status(404).json({ message: 'Product info missing' });
+    res.status(404).json({ message: 'Product is info missing' });
   }
 });
 
