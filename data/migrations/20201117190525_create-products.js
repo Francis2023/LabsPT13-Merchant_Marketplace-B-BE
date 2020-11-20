@@ -10,6 +10,7 @@ exports.up = function (knex) {
       .onUpdate('CASCADE');
 
     table.string('title').notNullable();
+    table.string('img').notNullable();
     table.float('price').notNullable();
     table.string('description').notNullable();
     table.string('category').notNullable();

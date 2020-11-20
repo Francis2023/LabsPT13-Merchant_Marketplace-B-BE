@@ -7,5 +7,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  return knex.schema.dropTableIfExist('tags');
+  return knex.schema.dropTableIfExists('tags');
 };
