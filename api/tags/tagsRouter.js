@@ -18,6 +18,17 @@ router.get('/', authRequired, async (req, res) => {
   }
 });
 
+// Temp
+router.get('/products', authRequired, async (req, res) => {
+  try {
+    const tags = await findAll('products-tags');
+    res.status(200).json(tags);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.put(
   '/:id',
   authRequired,

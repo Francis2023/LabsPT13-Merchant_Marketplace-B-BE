@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Products = require('./productsModel');
+const Tags = require('../tags/tagsModel');
 const authRequired = require('../middleware/authRequired');
 const validateId = require('../middleware/validateId');
 const validateBody = require('../middleware/validateBody');
@@ -32,6 +33,8 @@ router.post('/', authRequired, validateBody, async (req, res) => {
 
   try {
     const created = await Products.create(product);
+    // insert all the tags under the inserted product
+    await Tags.create(tags, created.id);
 
     res.status(201).json({ message: 'Product created', product: created[0] });
   } catch (err) {
