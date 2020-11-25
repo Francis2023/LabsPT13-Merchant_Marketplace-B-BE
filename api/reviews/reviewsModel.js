@@ -7,7 +7,4 @@ const findReview = (profile_id, product_id) => {
     return db('users-carts').where({ profile_id, product_id }).first();
 };
   
-module.exports = { 
-    create,
-    findReview 
- };
+module.exports = { create,findReview };
